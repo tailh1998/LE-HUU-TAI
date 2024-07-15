@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+# Prevents force-pushing to main | master | develop | uat ( branches )
+
+echo "==="
+echo ">> Pre-push Hook: Checking branch name..."
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+PROTECTED_BRANCHES="master develop main uat"
+
+for PROTECTED_BRANCH in $PROTECTED_BRANCHES; do
+  if [ "$BRANCH" = "$PROTECTED_BRANCH" ]; then
+    echo
+    echo "🚫 Cannot push to remote $BRANCH branch, please create your own branch and use PR." 
+    exit 1
+  fi
+done
+
+echo ">> Finish checking branch name"
+
+exit 0
