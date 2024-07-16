@@ -8,11 +8,19 @@ type SelectCurrencyProps = {
   label?: string
   value?: Currency | null
   defaultValue?: Currency
+  disabled?: boolean
   setData?: (data: Currency | null) => void
 }
 
-const SelectCurrency = ({ label, defaultValue, setData, value: _value }: SelectCurrencyProps) => {
+const SelectCurrency = ({
+  label,
+  defaultValue,
+  setData,
+  value: _value,
+  disabled
+}: SelectCurrencyProps) => {
   const [value, setValue] = useState<Currency | null>(defaultValue || null)
+  const selectValue = _value ?? value
 
   return (
     <Box
@@ -21,7 +29,8 @@ const SelectCurrency = ({ label, defaultValue, setData, value: _value }: SelectC
       gap={1.5}
     >
       <Autocomplete
-        value={_value ?? value}
+        disabled={disabled}
+        value={selectValue}
         onChange={(_, newValue) => {
           setValue(newValue)
           setData?.(newValue)
@@ -40,7 +49,7 @@ const SelectCurrency = ({ label, defaultValue, setData, value: _value }: SelectC
               <img
                 loading="lazy"
                 width="20"
-                src={`https://raw.githubusercontent.com/Switcheo/token-icons/65c7313a57660dbd3244d8a4d090e0af647e6532/tokens/${option.currency}.svg?raw=true`}
+                src={`https://raw.githubusercontent.com/Switcheo/token-icons/main/tokens/${option.currency}.svg?raw=true`}
                 alt=""
               />
               {option.currency}
@@ -49,6 +58,8 @@ const SelectCurrency = ({ label, defaultValue, setData, value: _value }: SelectC
         }}
         renderInput={(params) => (
           <TextField
+            error={!selectValue}
+            helperText={!selectValue ? "Please select currency" : null}
             {...params}
             label={label}
             inputProps={{
